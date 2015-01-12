@@ -104,8 +104,8 @@ namespace ReBot
 				//Removes Players that are out of Range or Dead
 				PlayerObject HealingTarget = HPSort[i];
 				if(HealingTarget.IsDead == false && HealingTarget.IsInCombatRangeAndLoS) {
-					Cast("Rejuvenation", () => HealingTarget.HealthFraction < (HealingPercent/ 100f) && !HealingTarget.HasAura("Rejuvenation"));
-					Cast("Cenarion Ward", () => HealingTarget.HealthFraction <(HealingPercent/ 100f));
+					Cast("Rejuvenation", () => HealingTarget.HealthFraction < (HealingPercent/ 100f) && !HealingTarget.HasAura("Rejuvenation"), HealingTarget);
+					Cast("Cenarion Ward", () => HealingTarget.HealthFraction <(HealingPercent/ 100f), HealingTarget);
 				}
 			}
 			//</Healing Section!!!!>

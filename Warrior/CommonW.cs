@@ -84,6 +84,8 @@ namespace ReBot{
 		CommandingShout ,
 		BattleShout ,
 	}
+	
+	private bool FocusOn = false;
 		
 		public bool CrowdControl(UnitObject add) //checks spells to see if CC
 			{
@@ -151,15 +153,16 @@ namespace ReBot{
 			if (Cast("Shockwave", () => Target.IsCasting && SpellReflect() == false)) return; //Added to stun Casters
 			if (CastSelf("Spell Reflection", () => Target.IsCasting && Target.CombatRange <= 40 && Target.Target == Me && ifAddInSpellRangeCastingCC() )) return;
 			if (CastSelf("Mass Spell Reflection", () => Target.IsCasting && ifAddInSpellRangeCastingCC() )) return; //Cast Mass spell reflect for CC spells
-			if (Cast("Pummel", () => Me.Focus.IsCastingAndInterruptible() && Me.Focus.IsInCombatRangeAndLoS && SpellReflect() == false, Me.Focus)) return;
-			if (Cast("Storm Bolt", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false, Me.Focus)) return;
-			if (Cast("Charge", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && ReturnFromCharge() == true, Me.Focus)) return;
+			if (Cast("Pummel", () => Me.Focus.IsCastingAndInterruptible() && Me.Focus.IsInCombatRangeAndLoS && SpellReflect() == false && FocusOn, Me.Focus)) return;
+			if (Cast("Storm Bolt", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && FocusOn, Me.Focus)) return;
+			if (Cast("Charge", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && ReturnFromCharge() == true && FocusOn, Me.Focus)) return;
 		}
 		
 		public PlayerObject[] SetArenaTargets() {
 			var players = API.Players.Where(u => u.IsEnemy).ToArray();
 			DebugWrite("Inside of SetArenaTarget");
 			HealerFocus(players);
+			FocusOn = true;
 			return players;
 		}
 		
