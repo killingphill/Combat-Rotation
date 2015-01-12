@@ -10,7 +10,7 @@ namespace ReBot
     [Rotation("PhilArms", "Phil", WoWClass.Warrior, Specialization.WarriorArms)]
     public class PhilArms : CommonW
  	{
-		
+		private bool inArena = false;
 		public PhilArms()
 		{
 			GroupBuffs = new[]
@@ -29,6 +29,9 @@ namespace ReBot
 		public override bool OutOfCombat()
 		{
 			CastSelf("Battle Stance", () => !IsInShapeshiftForm("Battle Stance"));
+			if(inArena) {
+				inArena = false;
+			}
 			if(doOutOfCombat()) 
 			{
 				return true;
@@ -38,6 +41,13 @@ namespace ReBot
 
 		public override void Combat()
 		{
+			if(!inArena)
+			{
+				PlayerObject[] players = SetArenaTargets();
+				inArena = true;
+				DebugWrite("Set Arena Targets");
+			}
+		
 			//Heal
 			if (CastSelf("Rallying Cry", () => Me.HealthFraction <= 0.35 && !HasAura("Die by the Sword"))) return;
 			if (CastSelf("Enraged Regeneration", () => Me.HealthFraction <= 0.8)) return;
@@ -51,6 +61,8 @@ namespace ReBot
 			if (CastSelf("Battle Stance", () => Me.HealthFraction >= (BattleStance /100) && !IsInShapeshiftForm("Battle Stance"))) return;
 			if (CastSelf("Shield Barrier", () => Me.HealthFraction >= .4 && IsInShapeshiftForm("Defensive Stance") && Me.GetPower(WoWPowerType.Rage) >= 30 && !HasAura("Shield Barrier"))) return;
 			if (CastSelf("Berserker Rage", () => !HasAura("Enrage") && !EnrageFear)) return;
+			
+
 
 
 			//Near/In melee Range
@@ -62,12 +74,7 @@ namespace ReBot
 			
 			
 				// interrupt casting or reflect
-				if (Cast("Pummel", () => Target.IsCastingAndInterruptible() && !HasAura("Spell Reflect") && !HasAura("Mass Spell Reflection") && Target.RemainingCastTime < 1000)) return;
-				if (Cast("Intimidating Shout", () => Target.IsCasting && !HasAura("Mass Spell Reflection") && !HasAura("Spell Reflection"))) return; //Added to fear Casters
-				if (Cast("Storm Bolt", () => Target.IsCasting && !HasAura("Mass Spell Reflection") && !HasAura("Spell Reflection"))) return; //Added to stun Casters
-				if (Cast("Shockwave", () => Target.IsCasting && !HasAura("Mass Spell Reflection") && !HasAura("Spell Reflection"))) return; //Added to stun Casters
-				if (CastSelf("Spell Reflection", () => Target.IsCasting && Target.CombatRange <= 40 && Target.Target == Me && ifAddInSpellRangeCastingCC() )) return;
-				if (CastSelf("Mass Spell Reflection", () => Target.IsCasting && ifAddInSpellRangeCastingCC() )) return; //Cast Mass spell reflect for CC spells
+				InterruptTime();
 				if (Cast("Hamstring", () => UseHamstring && (Target.IsPlayer || Target.IsFleeing) &&!Target.HasAura("Hamstring") && Me.GetPower(WoWPowerType.Rage) >= 30)) return;
 				
 

@@ -10,7 +10,7 @@ namespace ReBot
 	[Rotation("PhilGladiator", "Phil", WoWClass.Warrior, Specialization.WarriorProtection)]
     public class PhilGladiator : CommonW
 	{		
-			
+		private bool inArena = false;
 		public PhilGladiator()
 		{
 			GroupBuffs = new[]
@@ -29,7 +29,10 @@ namespace ReBot
 
 		public override bool OutOfCombat()
 		{
-			CastSelf("Gladiator Stance", () => !IsInShapeshiftForm("Gladiator Stance"));		
+			CastSelf("Gladiator Stance", () => !IsInShapeshiftForm("Gladiator Stance"));	
+			if(inArena) {
+				inArena = false;
+			}
 			if(doOutOfCombat()) 
 			{
 				return true;
@@ -39,6 +42,13 @@ namespace ReBot
 
 		public override void Combat()
 		{
+			if(!inArena)
+			{
+				PlayerObject[] players = SetArenaTargets();
+				inArena = true;
+				DebugWrite("Set Arena Targets");
+			}
+			
 			//Heal + Survival
 			Cast("Last Stand", () => Me.HealthFraction <= 0.2);
 			if (CastSelf("Rallying Cry", () => Me.HealthFraction <= 0.25)) return;
@@ -59,12 +69,7 @@ namespace ReBot
 			{
 				
 				// interrupt casting or reflect
-				if (Cast("Pummel", () => Target.IsCastingAndInterruptible() && !HasAura("Spell Reflect") && !HasAura("Mass Spell Reflection") && Target.RemainingCastTime < 1000)) return;
-				if (Cast("Intimidating Shout", () => Target.IsCasting && !HasAura("Mass Spell Reflection") && !HasAura("Spell Reflection"))) return; //Added to fear Casters
-				if (Cast("Storm Bolt", () => Target.IsCasting && !HasAura("Mass Spell Reflection") && !HasAura("Spell Reflection"))) return; //Added to stun Casters
-				if (Cast("Shockwave", () => Target.IsCasting && !HasAura("Mass Spell Reflection") && !HasAura("Spell Reflection"))) return; //Added to stun Casters
-				if (CastSelf("Spell Reflection", () => Target.IsCasting && Target.CombatRange <= 40 && Target.Target == Me && ifAddInSpellRangeCastingCC() )) return;
-				if (CastSelf("Mass Spell Reflection", () => Target.IsCasting && ifAddInSpellRangeCastingCC() )) return; //Cast Mass spell reflect for CC spells
+				InterruptTime();
 				if (Cast("Hamstring", () => UseHamstring && (Target.IsPlayer || Target.IsFleeing) &&!Target.HasAura("Hamstring") && Me.GetPower(WoWPowerType.Rage) >= 30)) return;
 				if (Cast("Shield Block", () => Me.GetPower(WoWPowerType.Rage) >= 20 && !HasAura("Shield Charge")));								
 				if (CastSelf("Shield Barrier", () => Me.HealthFraction >= .4 && Me.GetPower(WoWPowerType.Rage) >= 30 && !HasAura("Shield Barrier")));

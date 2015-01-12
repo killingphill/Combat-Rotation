@@ -19,6 +19,12 @@ namespace ReBot{
 	public abstract class CommonW : CombatRotation{
 	
 		// <summary> 
+		// Debugg
+		// </summary>
+		[JsonProperty("DeveloperDebugMode")]
+        public bool developerDebugMode = false;
+		
+		// <summary> 
 		// Should it use Execute
 		// </summary>
 		[JsonProperty("Use Execute")]
@@ -119,6 +125,69 @@ namespace ReBot{
 			return false;
 		} 
 		
+		public bool SpellReflect()
+		{
+			if(HasAura("Spell Reflect") || HasAura("Mass Spell Reflection"))
+			{
+				return true;
+			}
+			return false;
+		}
+		
+		private bool ReturnFromCharge()
+		{
+			if(SpellCooldown("Charge") == 0 && SpellCooldown("Heroic Leap") == 0 && SpellCooldown("Pummel") == 0) 
+			{
+				return true;
+			}
+			return false;
+		}
+		
+		public void InterruptTime()
+		{
+			if (Cast("Pummel", () => Target.IsCastingAndInterruptible() && SpellReflect() == false && Target.RemainingCastTime < 1000)) return;
+			if (Cast("Intimidating Shout", () => Target.IsCasting && SpellReflect() == false)) return; //Added to fear Casters
+			if (Cast("Storm Bolt", () => Target.IsCasting && SpellReflect() == false)) return; //Added to stun Casters
+			if (Cast("Shockwave", () => Target.IsCasting && SpellReflect() == false)) return; //Added to stun Casters
+			if (CastSelf("Spell Reflection", () => Target.IsCasting && Target.CombatRange <= 40 && Target.Target == Me && ifAddInSpellRangeCastingCC() )) return;
+			if (CastSelf("Mass Spell Reflection", () => Target.IsCasting && ifAddInSpellRangeCastingCC() )) return; //Cast Mass spell reflect for CC spells
+			if (Cast("Pummel", () => Me.Focus.IsCastingAndInterruptible() && Me.Focus.IsInCombatRangeAndLoS && SpellReflect() == false, Me.Focus)) return;
+			if (Cast("Storm Bolt", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false, Me.Focus)) return;
+			if (Cast("Charge", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && ReturnFromCharge() == true, Me.Focus)) return;
+		}
+		
+		public PlayerObject[] SetArenaTargets() {
+			var players = API.Players.Where(u => u.IsEnemy).ToArray();
+			DebugWrite("Inside of SetArenaTarget");
+			HealerFocus(players);
+			return players;
+		}
+		
+		public void HealerFocus(PlayerObject[] players) 
+		{
+			DebugWrite("Inside of HealerFocus");
+			for(int i =0; i < players.Length; i++)
+			{
+				if(players[i].IsHealer){
+					if (Me.Focus == null) {
+						Me.SetFocus(players[i]);
+						DebugWrite("Set Healer As Focus");
+					}
+				}
+			} 
+			if (Me.Focus == null)
+			{
+				if (Target == players[0])
+				{
+					Me.SetFocus(players[1]);
+				}else{
+					Me.SetFocus(players[0]);
+				}
+			}
+		
+		}
+		
+		
 		
 		public bool doOutOfCombat(){
 
@@ -129,6 +198,8 @@ namespace ReBot{
 		
 		}
 	
+		public void DebugWrite(string s) {if (developerDebugMode){API.Print(s);}}
+		public void DebugWriteBypass(string s) {API.Print(s);}
 	
 	}
 
