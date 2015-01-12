@@ -30,7 +30,7 @@ namespace ReBot
 		{
 			
 			CastSelf("Battle Stance", () => !IsInShapeshiftForm("Battle Stance"));
-			if(inArena) {
+			if(!inArena && Target.IsPlayer) {
 				inArena = false;
 			}
 			if(doOutOfCombat()) 

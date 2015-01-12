@@ -30,7 +30,7 @@ namespace ReBot
 		public override bool OutOfCombat()
 		{
 			CastSelf("Gladiator Stance", () => !IsInShapeshiftForm("Gladiator Stance"));	
-			if(inArena) {
+			if(!inArena && Target.IsPlayer) {
 				inArena = false;
 			}
 			if(doOutOfCombat()) 

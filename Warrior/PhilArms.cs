@@ -41,7 +41,7 @@ namespace ReBot
 
 		public override void Combat()
 		{
-			if(!inArena)
+			if(!inArena && Target.IsPlayer)
 			{
 				PlayerObject[] players = SetArenaTargets();
 				inArena = true;
