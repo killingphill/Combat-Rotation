@@ -86,6 +86,7 @@ namespace ReBot{
 	}
 	
 	private bool FocusOn = false;
+	private bool TerminalLance = true;
 		
 		public bool CrowdControl(UnitObject add) //checks spells to see if CC
 			{
