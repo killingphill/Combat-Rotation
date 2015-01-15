@@ -154,7 +154,7 @@ namespace ReBot{
 			if (Cast("Shockwave", () => Target.IsCasting && SpellReflect() == false)) return; //Added to stun Casters
 			if (CastSelf("Spell Reflection", () => Target.IsCasting && Target.CombatRange <= 40 && Target.Target == Me && ifAddInSpellRangeCastingCC() )) return;
 			if (CastSelf("Mass Spell Reflection", () => Target.IsCasting && ifAddInSpellRangeCastingCC() )) return; //Cast Mass spell reflect for CC spells
-			if(FocusOn){
+			if(FocusOn && Me.Focus.IsEnemy){
 				if (Cast("Pummel", () => Me.Focus.IsCastingAndInterruptible() && Me.Focus.IsInCombatRangeAndLoS && SpellReflect() == false && FocusOn, Me.Focus)) return;
 				if (Cast("Storm Bolt", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && FocusOn, Me.Focus)) return;
 				if (Cast("Charge", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && ReturnFromCharge() == true && FocusOn, Me.Focus)) return;
@@ -164,8 +164,9 @@ namespace ReBot{
 		public PlayerObject[] SetArenaTargets() {
 			var players = API.Players.Where(u => u.IsEnemy).ToArray();
 			DebugWrite("Inside of SetArenaTarget");
-			HealerFocus(players);
-			FocusOn = true;
+			if (players.Length > 1){
+				HealerFocus(players);
+			}
 			return players;
 		}
 		
@@ -177,7 +178,8 @@ namespace ReBot{
 				if(players[i].IsHealer){
 					if (Me.Focus == null) {
 						Me.SetFocus(players[i]);
-						DebugWrite("Set Healer As Focus");
+						FocusOn = true;
+						//DebugWrite("Set Healer As Focus");
 					}
 				}
 			} 
@@ -185,9 +187,14 @@ namespace ReBot{
 			{
 				if (Target == players[0])
 				{
-					Me.SetFocus(players[1]);
+					if(players.Length >1)
+					{
+						Me.SetFocus(players[1]);
+					}
+					FocusOn = true;
 				}else{
 					Me.SetFocus(players[0]);
+					FocusOn = true;
 				}
 			}
 		
@@ -196,7 +203,10 @@ namespace ReBot{
 		
 		
 		public bool doOutOfCombat(){
-
+		
+			if(Me.Focus == null) {
+				FocusOn = false;
+			}
             if (CastSelf("Battle Shout", () =>  ShoutOpt == ShoutTyp.BattleShout &&!HasAura("Battle Shout") && !HasAura("Horn of Winter") && !HasAura("Trueshot Aura"))) return true;
 			if (CastSelf("Commanding Shout", () => ShoutOpt == ShoutTyp.CommandingShout && !HasAura("Commanding Shout") && !HasAura("Blood Pact") && !HasAura("Power Word: Fortitude") && !HasAura("Qiraji Fortitude") && !HasAura("Savage Vigor") && !HasAura("Sturdiness") && !HasAura("Invigorating Roar"))) return true;
 			FocusOn = false;

@@ -7,7 +7,7 @@ using Geometry;
 
 namespace ReBot
 {
-    [Rotation("PhilFury", "Phil", WoWClass.Warrior, Specialization.WarriorFury)]
+    [Rotation("PhilFury", "Phil", "2.0.0.2", WoWClass.Warrior, Specialization.WarriorFury)]
     public class PhilFury : CommonW
  	{
 		private bool inArena = false;
@@ -30,7 +30,8 @@ namespace ReBot
 		{
 			
 			CastSelf("Battle Stance", () => !IsInShapeshiftForm("Battle Stance"));
-			if(!inArena && Target.IsPlayer) {
+			if(!inArena && API.MapInfo.Type == MapType.Arena)
+			{
 				inArena = false;
 			}
 			if(doOutOfCombat()) 
@@ -45,7 +46,10 @@ namespace ReBot
 			if(!inArena && API.MapInfo.Type == MapType.Arena)
 			{
 				PlayerObject[] players = SetArenaTargets();
-				inArena = true;
+				if(players.Length > 1)
+				{
+					inArena = true;
+				}
 				DebugWrite("Set Arena Targets");
 			}
 			
