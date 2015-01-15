@@ -154,9 +154,11 @@ namespace ReBot{
 			if (Cast("Shockwave", () => Target.IsCasting && SpellReflect() == false)) return; //Added to stun Casters
 			if (CastSelf("Spell Reflection", () => Target.IsCasting && Target.CombatRange <= 40 && Target.Target == Me && ifAddInSpellRangeCastingCC() )) return;
 			if (CastSelf("Mass Spell Reflection", () => Target.IsCasting && ifAddInSpellRangeCastingCC() )) return; //Cast Mass spell reflect for CC spells
-			if (Cast("Pummel", () => Me.Focus.IsCastingAndInterruptible() && Me.Focus.IsInCombatRangeAndLoS && SpellReflect() == false && FocusOn, Me.Focus)) return;
-			if (Cast("Storm Bolt", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && FocusOn, Me.Focus)) return;
-			if (Cast("Charge", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && ReturnFromCharge() == true && FocusOn, Me.Focus)) return;
+			if(FocusOn){
+				if (Cast("Pummel", () => Me.Focus.IsCastingAndInterruptible() && Me.Focus.IsInCombatRangeAndLoS && SpellReflect() == false && FocusOn, Me.Focus)) return;
+				if (Cast("Storm Bolt", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && FocusOn, Me.Focus)) return;
+				if (Cast("Charge", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && ReturnFromCharge() == true && FocusOn, Me.Focus)) return;
+			}
 		}
 		
 		public PlayerObject[] SetArenaTargets() {
@@ -197,6 +199,7 @@ namespace ReBot{
 
             if (CastSelf("Battle Shout", () =>  ShoutOpt == ShoutTyp.BattleShout &&!HasAura("Battle Shout") && !HasAura("Horn of Winter") && !HasAura("Trueshot Aura"))) return true;
 			if (CastSelf("Commanding Shout", () => ShoutOpt == ShoutTyp.CommandingShout && !HasAura("Commanding Shout") && !HasAura("Blood Pact") && !HasAura("Power Word: Fortitude") && !HasAura("Qiraji Fortitude") && !HasAura("Savage Vigor") && !HasAura("Sturdiness") && !HasAura("Invigorating Roar"))) return true;
+			FocusOn = false;
 			return false;
 		
 		

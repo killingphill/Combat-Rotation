@@ -42,7 +42,7 @@ namespace ReBot
 
 		public override void Combat()
 		{
-			if(!inArena)
+			if(!inArena && API.MapInfo.Type == MapType.Arena)
 			{
 				PlayerObject[] players = SetArenaTargets();
 				inArena = true;
@@ -69,7 +69,10 @@ namespace ReBot
 			{
 				
 				// interrupt casting or reflect
-				InterruptTime();
+				if(Target.IsPlayer)
+				{
+					InterruptTime();
+				}
 				if (Cast("Hamstring", () => UseHamstring && (Target.IsPlayer || Target.IsFleeing) &&!Target.HasAura("Hamstring") && Me.GetPower(WoWPowerType.Rage) >= 30)) return;
 				if (Cast("Shield Block", () => Me.GetPower(WoWPowerType.Rage) >= 20 && !HasAura("Shield Charge")));								
 				if (CastSelf("Shield Barrier", () => Me.HealthFraction >= .4 && Me.GetPower(WoWPowerType.Rage) >= 30 && !HasAura("Shield Barrier")));
