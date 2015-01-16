@@ -86,12 +86,16 @@ namespace ReBot
 		public override void Combat()
 		{
 			
+			if(Target.HealthFraction <= .50)
+			{
+				Burst();
+			}
 			//<HEALING SECTION!!!!>
 			//Get a List of all Party Members
 			List<PlayerObject> members = Group.GetGroupMemberObjects();
 			//Sort the Group by Health Percent
 			List<PlayerObject> HPSort = members.OrderBy(x => x.HealthFraction).ToList();
-			if (members.Count >0) {
+			if (members.Count >0 && API.MapInfo.Type == MapType.Arena) {
 				//If I can Instant Cast Healing Touch
 				if (HasAura("Predatory Swiftness")) {
 					if (Me.HealthFraction < HPSort[0].HealthFraction) {

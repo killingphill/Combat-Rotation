@@ -38,6 +38,7 @@ namespace ReBot
 			}
 			return false;
 		}
+		
 
 		public override void Combat()
 		{
@@ -91,33 +92,32 @@ namespace ReBot
 				//Rota AoE
 				if (addsInRange > 1)
 				{
+					if(Target.HealthFraction <= BurstPercentage /100f)
+					{
+						Burst();
+					}
 					if (Cast("Intimidating Shout",  () => UseIntimShout &&  Me.HealthFraction <= 0.25)) return;
 					if (CastOnTerrain("Ravager", Target.Position)) return;
-					if (Cast("Intimidating Shout",  () => UseIntimShout &&  Me.HealthFraction <= 0.25)) return;
 					if (CastSelf("Sweeping Strikes", () => !HasAura("Sweeping Strikes"))) return;
 					if (CastOnTerrain("Ravager", Target.Position)) return;
 					if (Cast("Bladestorm", () => ((addsInRange > 0) && (!HasAura("Bladestorm"))))) return;
-					if (Cast("Bloodbath")) return;
-					if (Cast("Dragon Roar")) return;
 					if (Cast("Rend", () => !HasAura("Rend"))) return;
 					if (Cast("Whirlwind", () => Me.GetPower(WoWPowerType.Rage) >= 60, "too much rage")) return;
-					if (Cast("Recklessness")) return;
-					if (Cast("Bloodbath")) return;
-					if (Cast("Dragon Roar")) return;
-
+					
 					
 				}
 				//Rota DPS
 				else
 				{
-					
+					if(Target.HealthFraction <= BurstPercentage /100f && Target.IsPlayer)
+					{
+						Burst();
+					}
 					if (Cast("Execute", () => HasAura("Sudden Death"))) return;	
 					if (Cast("Execute", () => UseExecute && Me.GetPower(WoWPowerType.Rage) > 40 && Target.HealthFraction < 0.2)) return;
 					if (Cast("Colossus Smash", () =>  Me.GetPower(WoWPowerType.Rage) > 60))
 					if (Cast("Rend", () => !Target.HasAura("Rend"))) return;
-					if (CastOnTerrain("Ravager", Target.Position)) return;
-					if (Cast("Mortal Strike")) return;
-					if (Cast("Bloodbath",() =>  Me.GetPower(WoWPowerType.Rage) < 70)) return;					
+					if (Cast("Mortal Strike")) return;				
 					if (Cast("Dragon Roar",() =>  Me.GetPower(WoWPowerType.Rage) < 70)) return;
 					if (Cast("Siegebreaker")) return;
 					if (Cast("Whirlwind", () => Me.GetPower(WoWPowerType.Rage) >= 60, "too much rage")) return;

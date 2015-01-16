@@ -98,6 +98,10 @@ namespace ReBot
 				//Rota AoE
 				if (addsInRange > 1) // Moved number up to 1
 				{
+					if(Target.HealthFraction <= BurstPercentage /100f)
+					{
+						Burst();
+					}
 					if (Cast("Intimidating Shout",  () => UseIntimShout &&(addsInRange > 2 && Me.HealthFraction <= 0.25))) return;
 					if (Cast("Shockwave")) return; //Added this here to get multiple target stuns
 					if (Cast("Revenge")) return;
@@ -112,6 +116,10 @@ namespace ReBot
 				//Rota DPS
 				else
 				{
+					if(Target.HealthFraction <= BurstPercentage /100f)
+					{
+						Burst();
+					}
 					if (Cast("Devastate", () => AuraStackCount("Unyielding Strikes")>0 && AuraStackCount("Unyielding Strikes")< 6 && AuraTimeRemaining("Unyielding Strikes")<1.5)) return;
 					if (Cast("Shield Slam")) return;
 					if (Cast("Revenge")) return;

@@ -91,15 +91,15 @@ namespace ReBot
 				//Rota AoE
 				if (addsInRange > 1)
 				{
+					if(Target.HealthFraction <= BurstPercentage /100f)
+					{
+						Burst();
+					}
 					if (Cast("Intimidating Shout",  () => UseIntimShout &&  Me.HealthFraction <= 0.25)) return;
-					if (CastOnTerrain("Ravager", Target.Position)) return;
 					if (Cast("Bloodthirst", () => !HasAura("Enrage"))) return;
 					if (Cast("Bladestorm", () => ((addsInRange > 0) && (!HasAura("Bladestorm"))))) return;
 					if (Cast("Whirlwind", () => Me.GetPower(WoWPowerType.Rage) >= 20, "meat Cleaver")) return;
 					if (Cast("Raging Blow", () => HasAura("Raging Blow!"))) return;	
-					if (Cast("Recklessness")) return;
-					if (Cast("Bloodbath")) return;
-					if (Cast("Dragon Roar")) return;
 					if (Cast("Bloodthirst", () => Me.GetPower(WoWPowerType.Rage) <= 20 )) return;
 					if (Cast("Whirlwind", () => Me.GetPower(WoWPowerType.Rage) >= 60, "too much rage")) return;
 					
@@ -107,19 +107,17 @@ namespace ReBot
 				//Rota DPS
 				else
 				{
-					
-				if (Cast("Execute", () => UseExecute && Me.GetPower(WoWPowerType.Rage) > 40 && Target.HealthFraction < 0.2)) return;
-				if (Cast("Wild Strike", () => HasAura("Bloodsurge"))) return;
-				if (Cast("Execute", () => HasAura("Sudden Death"))) return;
-				if (Cast("Raging Blow", () => HasAura("Raging Blow!"))) return;	
-				if (Cast("Bloodthirst", () => !HasAura("Enrage") || Me.GetPower(WoWPowerType.Rage) <= 80)) return;
-				if (Cast("Recklessness")) return;
-				if (Cast("Bloodbath")) return;					
-				if (CastOnTerrain("Ravager", Target.Position)) return;
-				if (Cast("Dragon Roar")) return;
-				if (Cast("Siegebreaker")) return;				
-				if (Cast("Wild Strike", () => Me.GetPower(WoWPowerType.Rage) >= 90, "too much rage")) return;
-				if (Cast("Bloodthirst")) return;
+					if(Target.HealthFraction <= BurstPercentage /100f)
+					{
+						Burst();
+					}
+					if (Cast("Execute", () => UseExecute && Me.GetPower(WoWPowerType.Rage) > 40 && Target.HealthFraction < 0.2)) return;
+					if (Cast("Wild Strike", () => HasAura("Bloodsurge"))) return;
+					if (Cast("Execute", () => HasAura("Sudden Death"))) return;
+					if (Cast("Raging Blow", () => HasAura("Raging Blow!"))) return;	
+					if (Cast("Bloodthirst", () => !HasAura("Enrage") || Me.GetPower(WoWPowerType.Rage) <= 80)) return;			
+					if (Cast("Wild Strike", () => Me.GetPower(WoWPowerType.Rage) >= 90, "too much rage")) return;
+					if (Cast("Bloodthirst")) return;
 	
 				}
  				

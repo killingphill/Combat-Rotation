@@ -48,6 +48,9 @@ namespace ReBot{
 		[JsonProperty("T16 4pc Bonus")]
 		public bool T16Bonus4pc  = false;
 		
+		[JsonProperty("Burst Percentage")]
+		public int BurstPercentage = 60;
+		
 		// <summary>
 		// Should it use Intimidating Shout
 		// </summary>
@@ -84,6 +87,7 @@ namespace ReBot{
 		CommandingShout ,
 		BattleShout ,
 	}
+	
 	
 	private bool FocusOn = false;
 	private bool TerminalLance = true;
@@ -146,6 +150,23 @@ namespace ReBot{
 			return false;
 		}
 		
+		// <summary>
+		// Burst Rotation when called
+		// </summary>
+		public bool Burst() 
+		{
+			Cast("Recklessness");
+			Cast("Bloodbath");
+			Cast("Dragon Roar");
+			Cast("Siegebreaker");
+			Cast("Shockwave");
+			Cast("Storm Bolt");
+			CastOnTerrain("Ravager", Target.Position);
+			Cast("Bladestorm");
+			return true;
+			
+		}
+		
 		public void InterruptTime()
 		{
 			if (Cast("Pummel", () => Target.IsCastingAndInterruptible() && SpellReflect() == false && Target.RemainingCastTime < 1000)) return;
@@ -164,7 +185,8 @@ namespace ReBot{
 		public PlayerObject[] SetArenaTargets() {
 			var players = API.Players.Where(u => u.IsEnemy).ToArray();
 			DebugWrite("Inside of SetArenaTarget");
-			if (players.Length > 1){
+			if (players.Length > 1)
+			{
 				HealerFocus(players);
 			}
 			return players;
