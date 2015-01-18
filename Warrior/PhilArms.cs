@@ -7,7 +7,7 @@ using Geometry;
 
 namespace ReBot
 {
-    [Rotation("PhilArms", "Phil", "2.0.0.2", WoWClass.Warrior, Specialization.WarriorArms)]
+    [Rotation("PhilArms", "Phil", "2.0.0.3", WoWClass.Warrior, Specialization.WarriorArms)]
     public class PhilArms : CommonW
  	{
 		private bool inArena = false;
