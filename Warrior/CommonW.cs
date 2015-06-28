@@ -12,7 +12,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace ReBot{
 
@@ -80,6 +79,12 @@ namespace ReBot{
 		// </summary>
 		[JsonProperty("Save Berserker Rage for fear")]
 		public bool EnrageFear= false;
+		
+		// <summary>
+		// Should the bot use StormBolt
+		// </summary>
+		[JsonProperty("Use StormBolt")}
+		public bool StormBoltToggle = true;
 		
 	public enum ShoutTyp
 	{
@@ -160,7 +165,9 @@ namespace ReBot{
 			Cast("Dragon Roar");
 			Cast("Siegebreaker");
 			Cast("Shockwave");
-			Cast("Storm Bolt");
+			if(StormBoltToggle) {
+				Cast("Storm Bolt");
+			}
 			CastOnTerrain("Ravager", Target.Position);
 			Cast("Bladestorm");
 			return true;
@@ -171,7 +178,7 @@ namespace ReBot{
 		{
 			if (Cast("Pummel", () => Target.IsCastingAndInterruptible() && SpellReflect() == false && Target.RemainingCastTime < 1000)) return;
 			if (Cast("Intimidating Shout", () => Target.IsCasting && SpellReflect() == false)) return; //Added to fear Casters
-			if (Cast("Storm Bolt", () => Target.IsCasting && SpellReflect() == false)) return; //Added to stun Casters
+			if (Cast("Storm Bolt", () => Target.IsCasting && SpellReflect() == false && StormBoltToggle)) return; //Added to stun Casters
 			if (Cast("Shockwave", () => Target.IsCasting && SpellReflect() == false)) return; //Added to stun Casters
 			if (CastSelf("Spell Reflection", () => Target.IsCasting && Target.CombatRange <= 40 && Target.Target == Me && ifAddInSpellRangeCastingCC() )) return;
 			if (CastSelf("Mass Spell Reflection", () => Target.IsCasting && ifAddInSpellRangeCastingCC() )) return; //Cast Mass spell reflect for CC spells

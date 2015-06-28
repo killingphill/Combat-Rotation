@@ -113,10 +113,12 @@ namespace ReBot
 					{
 						Burst();
 					}
+					if (Cast("Hamstring", () => !Target.HasAura("Hamstring"))) return;
+					if (Cast("Rend", () => !Target.HasAura("Rend"))) return;
+					if (Cast("Mortal Strike", () => !Target.HasAura("Mortal Wounds"))) return;
 					if (Cast("Execute", () => HasAura("Sudden Death"))) return;	
 					if (Cast("Execute", () => UseExecute && Me.GetPower(WoWPowerType.Rage) > 40 && Target.HealthFraction < 0.2)) return;
 					if (Cast("Colossus Smash", () =>  Me.GetPower(WoWPowerType.Rage) > 60))
-					if (Cast("Rend", () => !Target.HasAura("Rend"))) return;
 					if (Cast("Mortal Strike")) return;				
 					if (Cast("Dragon Roar",() =>  Me.GetPower(WoWPowerType.Rage) < 70)) return;
 					if (Cast("Siegebreaker")) return;
