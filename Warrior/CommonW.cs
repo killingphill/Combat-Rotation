@@ -111,6 +111,7 @@ namespace ReBot{
 				if (add.CastingSpellId == 20066) return true; //repentance
 				if (add.CastingSpellId == 605) return true; //Dominate Mind
 				if (add.CastingSpellId == 51514) return true; //Hex
+				if (add.CastingSpellId == 19386) return true; //Wyrven Sting
 				
 				return false;
 			

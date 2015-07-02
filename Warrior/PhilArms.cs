@@ -25,6 +25,16 @@ namespace ReBot
 		    UseExecute = true;
 		}
 		int LeapTimer = 0;
+		
+		/*
+		private bool CsmashCD()
+		{
+			if(SpellCooldown("Colossus Smash") <= 2){
+				return true;
+			}
+			return false;
+		}
+		*/
 
 		public override bool OutOfCombat()
 		{
@@ -113,7 +123,7 @@ namespace ReBot
 					{
 						Burst();
 					}
-					if (Cast("Hamstring", () => !Target.HasAura("Hamstring"))) return;
+					if (Cast("Hamstring", () => !Target.HasAura("Hamstring") && Target.IsPlayer && CCable())) return;
 					if (Cast("Rend", () => !Target.HasAura("Rend"))) return;
 					if (Cast("Mortal Strike", () => !Target.HasAura("Mortal Wounds"))) return;
 					if (Cast("Execute", () => HasAura("Sudden Death"))) return;	
