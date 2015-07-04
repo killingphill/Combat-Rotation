@@ -83,7 +83,7 @@ namespace ReBot{
 		// <summary>
 		// Should the bot use StormBolt
 		// </summary>
-		[JsonProperty("Use StormBolt")}
+		[JsonProperty("Use StormBolt")]
 		public bool StormBoltToggle = true;
 		
 	public enum ShoutTyp
@@ -188,6 +188,14 @@ namespace ReBot{
 				if (Cast("Storm Bolt", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && FocusOn, Me.Focus)) return;
 				if (Cast("Charge", () => Me.Focus.IsCastingAndInterruptible() && SpellReflect() == false && ReturnFromCharge() == true && FocusOn, Me.Focus)) return;
 			}
+		}
+		
+		public bool CCable()
+		{
+				if(target.HasAura("Hand of Freedom"){
+					return false;
+				}
+				return true;
 		}
 		
 		public PlayerObject[] SetArenaTargets() {
