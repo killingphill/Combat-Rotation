@@ -192,7 +192,7 @@ namespace ReBot{
 		
 		public bool CCable()
 		{
-				if(target.HasAura("Hand of Freedom")){
+				if(Target.HasAura("Hand of Freedom")){
 					return false;
 				}
 				return true;
